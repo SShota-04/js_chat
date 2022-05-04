@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel_Diary</title>
+    <link rel="stylesheet" href="css/nomalize.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@100;300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div>
+            <h1>Excel_Diary</h1>
+        </div>
+    </header>
+    <main>
+      <ul id="output"></ul>
+    </main>
+    <footer>
+        <form>
+            <fieldset>
+              <div>
+                <input type="text" id="name" placeholder="name">
+              </div>
+              <div>
+                <p class="output_title">comment</p>
+                <textarea id="comment"></textarea>
+              </div>
+              <div>
+                <button type="button" id="send">send</button>
+                <button type="button" id="logout-button">logout</button>
+              </div>
+            </fieldset>
+          </form>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+    <script>
+      // 日時をいい感じの形式にする関数
+      function convertTimestampToDatetime(timestamp) {
+        const _d = timestamp ? new Date(timestamp * 1000) : new Date();
+        const Y = _d.getFullYear();
+        const m = (_d.getMonth() + 1).toString().padStart(2, '0');
+        const d = _d.getDate().toString().padStart(2, '0');
+        const H = _d.getHours().toString().padStart(2, '0');
+        const i = _d.getMinutes().toString().padStart(2, '0');
+        const s = _d.getSeconds().toString().padStart(2, '0');
+        return `${Y}年 ${m}月 ${d}日  ${H}時${i}分`;
+      };
+    </script>
+    <script type="module" src="/content.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/6.0.0/firebase-ui-auth.js"></script>
+    <script type="module" src="/logout.js"></script>
+</body>
+</html>
