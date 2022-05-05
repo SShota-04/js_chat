@@ -6,7 +6,7 @@
     auth.onAuthStateChanged(async (user) => {
         console.log(user)
         if(!user){
-            location.href = "./login.html";
+            location.href = "/login.html";
         }
     });
 

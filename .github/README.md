@@ -16,5 +16,6 @@
 
 - firebaseのログイン画面実装
 - npmのインストールやfirebase側の設定にかなり苦戦した
-- excelへの出力実装はこれから
+- excelの出力方法がわからず迷走中
+- firebaseのデータ取得からではない、HTMLから取得した配列をexcelデータで出力することはできたが、firebaseがまだできていない
 
