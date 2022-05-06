@@ -30,49 +30,47 @@
       const db = getFirestore(app);
 
       //送信ボタンクリック時にデータ送信
-    $("#send").on("click", function() {
-        const postData = {
-            comment: $("#comment").val(),
-            name: $("#name").val(),
-            time: serverTimestamp(),
-        };
-        addDoc(collection(db, "diary"), postData);
-        $("#name").val("");
-        $("#comment").val("");
-    });
-
-    //onSnapshotを使うと自動でデータを取得してくれる
-    const q = query(collection(db, "diary"), orderBy("time", "desc"));
-
-    //データを取得する処理
-    onSnapshot(q,(querySnapshot) => {
-      console.log(querySnapshot.docs);
-
-      const documents = [];
-      querySnapshot.docs.forEach(function(doc){
-        const document = {
-          id: doc.id,
-          data: doc.data(),
-        };
-        documents.push(document);
+        $("#send").on("click", function() {
+          const postData = {
+              comment: $("#comment").val(),
+              name: $("#name").val(),
+              time: serverTimestamp(),
+          };
+          addDoc(collection(db, "diary"), postData);
+          $("#name").val("");
+          $("#comment").val("");
       });
 
-      console.log(documents);
 
-      const htmlElements = [];
-      documents.forEach(function(document){
-        htmlElements.push(`
-        <li id="${document.id}">
-        <p>${convertTimestampToDatetime(document.data.time?.seconds)}</p>
-        <p>${document.data.name}</p>
-        <p>${document.data.comment}</p>
-      </li>
-        `);
+      //onSnapshotを使うと自動でデータを取得してくれる
+      const q = query(collection(db, "diary"), orderBy("time", "desc"));
+
+      //データを取得する処理
+      onSnapshot(q,(querySnapshot) => {
+        console.log(querySnapshot.docs);
+
+        const documents = [];
+        querySnapshot.docs.forEach(function(doc){
+          const document = {
+            id: doc.id,
+            data: doc.data(),
+          };
+          documents.push(document);
+        });
+
+        console.log(documents);
+
+        const htmlElements = [];
+        documents.forEach(function(document){
+          htmlElements.push(`
+          <li id="${document.id}">
+          <p>${convertTimestampToDatetime(document.data.time?.seconds)}</p>
+          <p>${document.data.name}</p>
+          <p>${document.data.comment}</p>
+        </li>
+          `);
+        });
+
+        $("#output").html(htmlElements);
+
       });
-
-      $("#output").html(htmlElements);
-
-    });
-
-
-

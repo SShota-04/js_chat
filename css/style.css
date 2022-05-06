@@ -69,6 +69,10 @@ main ul{
     border-radius: 5px;
     padding: 10px;
 }
+#json{
+    height: 1px;
+    overflow: hidden;
+}
 
 /*-----------
 footer

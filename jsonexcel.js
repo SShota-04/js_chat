@@ -1,4 +1,4 @@
-/*// Import the functions you need from the SDKs you need
+// Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.7.0/firebase-app.js";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -24,36 +24,50 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+const apps = initializeApp(firebaseConfig);
 
-const db = getFirestore(app);
+const dbs = getFirestore(apps);
+
+          //送信ボタンクリック時にデータ送信
+          $("#send").on("click", function() {
+            const postData = {
+                comment: $("#comment").val(),
+                name: $("#name").val(),
+                time: serverTimestamp(),
+            };
+            addDoc(collection(dbs, "diary"), postData);
+            $("#name").val("");
+            $("#comment").val("");
+        });
+    
 
     //onSnapshotを使うと自動でデータを取得してくれる
-    const q = query(collection(db, "diary"), orderBy("time", "desc"));
+    const r = query(collection(dbs, "diary"), orderBy("time", "desc"));
 
     //データを取得する処理
-    onSnapshot(q,(querySnapshot) => {
-      console.log(querySnapshot.docs);
+    onSnapshot(r,(querySnapshots) => {
+      console.log(querySnapshots.docs);
 
-      const documents = [];
-      querySnapshot.docs.forEach(function(doc){
-        const document = {
+      const excels = [];
+      querySnapshots.docs.forEach(function(doc){
+        const excel = {
           id: doc.id,
-          data: doc.data(),
+          time: convertTimestampToDatetime(doc.data().time?.seconds),
+          name: doc.data().name,
+          comment: doc.data().comment,
         };
-        documents.push(document);
+        excels.push(excel);
       });
 
-      console.log(documents);
+      console.log(excels);
 
-      //excel出力処理
-      const JsonDocument = JSON.stringify(documents);
-
+      document.getElementById("json").innerHTML = JSON.stringify(excels, undefined, 4);
+      
       const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
       const EXCEL_EXTENSION = '.xlsx';
-
-      function downloadAsExcel(){
-          const worksheet = XLSX.utils.json_to_sheet(JsonDocument);
+  
+      $("#download_excel").on('click', function(){
+          const worksheet = XLSX.utils.json_to_sheet(excels);
           const workbook = {
               Sheets:{
                   'data':worksheet
@@ -63,51 +77,11 @@ const db = getFirestore(app);
           const excelBuffer = XLSX.write(workbook,{bookType:'xlsx',type:'array'});
           console.log(excelBuffer);
           saveAsExcel(excelBuffer,'myFile');
-        };
-
+      });
+      
       function saveAsExcel(buffer,filename){
           const data = new Blob([buffer],{ type: EXCEL_TYPE });
           saveAs(data,filename+'_export_'+new Date().getTime()+EXCEL_EXTENSION);
       };
-    });*/
 
-    const data = [{
-      "Segment": "Government",
-      "Country": "Canada",
-      "Product": "Carretera",
-      "Discount": "None",
-  },
-  {
-      "Segment": "Government",
-      "Country": "Germany",
-      "Product": "Carretera",
-      "Discount": "None",
-  },
-  {
-      "Segment": "Midmarket",
-      "Country": "France",
-      "Product": "Carretera",
-      "Discount": "None",
-  }];
-  document.getElementById("json").innerHTML = JSON.stringify(data, undefined, 4);
-  
-  const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-  const EXCEL_EXTENSION = '.xlsx';
-  
-  function downloadAsExcel(){
-      const worksheet = XLSX.utils.json_to_sheet(data);
-      const workbook = {
-          Sheets:{
-              'data':worksheet
-          },
-          SheetNames:['data']
-      };
-      const excelBuffer = XLSX.write(workbook,{bookType:'xlsx',type:'array'});
-      console.log(excelBuffer);
-      saveAsExcel(excelBuffer,'myFile');
-  };
-  
-  function saveAsExcel(buffer,filename){
-      const data = new Blob([buffer],{ type: EXCEL_TYPE });
-      saveAs(data,filename+'_export_'+new Date().getTime()+EXCEL_EXTENSION);
-  };
+    });
